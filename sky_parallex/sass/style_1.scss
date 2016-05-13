@@ -1,0 +1,25 @@
+@import "compass/reset";
+@import "compass/css3";
+
+body{
+    background-repeat: no-repeat;
+    position: relative;
+    
+    section{
+        z-index:2;
+        background-size: cover;
+        background-position: 50% 50%;
+        background-repeat: no-repeat;
+
+        &#section_1{ background-image: url(../images/background_1.jpg); }
+        &#section_2{ background-image: url(../images/background_2.jpg); }
+        &#section_3{ background-image: url(../images/background_3.jpg); }
+        &#section_4{ background-image: url(../images/background_4.jpg); top: 0}
+        &#section_5{ background-image: url(../images/background_5.jpg); }
+        &#section_6{ background-image: url(../images/background_6.jpg); }
+        &#section_7{ background-image: url(../images/background_7.jpg); }
+        &.fixed{
+             position: fixed; width: 100%
+        }
+    }
+}

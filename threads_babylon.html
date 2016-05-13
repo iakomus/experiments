@@ -1,0 +1,239 @@
+<html>
+<head>
+  <title>FG Experiments</title>
+  <script src="js/babylon.js"></script>
+  <script src="js/hand.js"></script>
+</head>
+<body>
+
+  <div style="height:500px; width: 500px;" id="babylon">
+    <canvas id="babylonCanvas"style="height:500px; width: 500px;" ></canvas>
+  </div>
+
+  <script type="text/javascript">
+  if (BABYLON.Engine.isSupported()) {
+    var canvas = document.getElementById('babylonCanvas');
+    var engine = new BABYLON.Engine(canvas, true);
+
+    var sceneB = new BABYLON.Scene(engine);
+    sceneB.clearColor = new BABYLON.Color3(1, 1, 1);
+
+    var camera = new BABYLON.ArcRotateCamera
+      ("camera", 1, 0.8, 10, new BABYLON.Vector3(0, 0, 0), sceneB);
+    sceneB.activeCamera.attachControl(canvas);
+
+    var light = new BABYLON.DirectionalLight
+      ("light", new BABYLON.Vector3(0, -1, 0), sceneB);
+    light.diffuse = new BABYLON.Color3(1, 0, 0);
+    light.specular = new BABYLON.Color3(1, 1, 1);
+
+
+    var light = new BABYLON.DirectionalLight
+      ("light", new BABYLON.Vector3(1, 2, 1), sceneB);
+    light.diffuse = new BABYLON.Color3(1, 0, 0);
+    light.specular = new BABYLON.Color3(1, 1, 1);
+
+
+
+
+
+
+
+    var box = BABYLON.Mesh.CreateBox("box", 3.0, sceneB);
+    box.isVisible = false;
+    var material = new BABYLON.StandardMaterial("texture", sceneB);
+     
+    box.material = material;
+    material.diffuseTexture = new BABYLON.Texture("images/akai.jpg", sceneB);
+
+    CreatePyramid4 = function (name, baseSize, height, scene, updatable) {
+      var pyramid = new BABYLON.Mesh(name, scene);
+
+      // Adding faces
+      var positions = window.midPositions = [
+        // Front face
+        0,  height/2,  0,
+        baseSize/2, -height/2, baseSize/2,
+        -baseSize/2, -height/2, baseSize/2,
+
+        // Right face
+        0, height/2, 0,
+        baseSize/2, -height/2, -baseSize/2,
+        baseSize/2, -height/2, baseSize/2,
+
+        // Back face
+        0, height/2,  0,
+        -baseSize/2, -height/2, -baseSize/2,
+        baseSize/2, -height/2, -baseSize/2,
+
+        // Left face
+        0, height/2,  0,
+        -baseSize/2, -height/2, baseSize/2,
+        -baseSize/2, -height/2, -baseSize/2,
+
+        // Bottom face
+        -baseSize/2, -height/2, baseSize/2,
+        baseSize/2, -height/2, baseSize/2,
+        baseSize/2, -height/2, -baseSize/2,
+        -baseSize/2, -height/2, -baseSize/2,
+
+        // // Front bottom face
+        // baseSize/2, -height/2, baseSize/2,
+        // -baseSize/2, -height/2, baseSize/2,
+        // baseSize/2, -height, baseSize/2,
+        // -baseSize/2, -height, baseSize/2,
+        // // Right bottom face
+        // baseSize/2, -height/2, -baseSize/2,
+        // baseSize/2, -height/2, baseSize/2,
+        // baseSize/2, -height, -baseSize/2,
+        // baseSize/2, -height, baseSize/2,
+        // // Back bottom face
+        // -baseSize/2, -height/2, -baseSize/2,
+        // baseSize/2, -height/2, -baseSize/2,
+        // -baseSize/2, -height, -baseSize/2,
+        // baseSize/2, -height, -baseSize/2,
+        // // Left bottom face
+        // -baseSize/2, -height/2, baseSize/2,
+        // -baseSize/2, -height/2, -baseSize/2,
+        // -baseSize/2, -height, baseSize/2,
+        // -baseSize/2, -height, -baseSize/2,
+
+        // // Bottom face
+        -baseSize/2, -height, baseSize/2,
+        baseSize/2, -height, baseSize/2,
+        baseSize/2, -height, -baseSize/2,
+        -baseSize/2, -height, -baseSize/2
+
+
+      ];
+
+      var normals = [
+        height, baseSize/2, 0,
+        height, baseSize/2, 0,
+        height, baseSize/2, 0,
+
+        0, baseSize/2, height,
+        0, baseSize/2, height,
+        0, baseSize/2, height,
+
+        -height, baseSize/2, 0,
+        -height, baseSize/2, 0,
+        -height, baseSize/2, 0,
+
+        0, baseSize/2, -height,
+        0, baseSize/2, -height,
+        0, baseSize/2, -height,
+
+        0, -1, 0,
+        0, -1, 0,
+        0, -1, 0,
+        0, -1, 0,
+
+        0, -1, 0,
+        0, -1, 0,
+        0, -1, 0,
+        0, -1, 0
+      ];
+
+      var indices = [];
+      var uvs = [];
+      var i = 0;
+      while (i < 12) {
+        indices.push(i+0);
+        uvs.push(1.0, 1.0);
+        indices.push(i+1);
+        uvs.push(0.0, 1.0);
+        indices.push(i+2);
+        uvs.push(0.0, 0.0);
+        i = i+3;
+      }
+
+      // indices.push(12);
+      // indices.push(13);
+      // indices.push(14);
+
+      // indices.push(12);
+      // indices.push(14);
+      // indices.push(15);
+
+      //three points each, two triangles per side
+      while (i < (12+4)) {
+        //runs 4 times
+        indices.push(i+1);
+        indices.push(i+4);
+        indices.push(i+0);
+
+        indices.push(i+3);
+        indices.push(i+0);
+        indices.push(i+4);
+        i++;
+      }
+
+
+      indices.push(positions.length/3-4);
+      indices.push(positions.length/3-3);
+      indices.push(positions.length/3-2);
+
+      indices.push(positions.length/3-4);
+      indices.push(positions.length/3-2);
+      indices.push(positions.length/3-1);
+
+      // uvs.push(1.0, 1.0);
+      // uvs.push(0.0, 1.0);
+      // uvs.push(0.0, 0.0);
+      // uvs.push(1.0, 0.0);
+
+      pyramid.setVerticesData(positions, BABYLON.VertexBuffer.PositionKind, updatable);
+      pyramid.setVerticesData(normals, BABYLON.VertexBuffer.NormalKind, updatable);
+      // pyramid.setVerticesData(uvs, BABYLON.VertexBuffer.UVKind, updatable);
+      pyramid.setIndices(indices);
+
+      return pyramid;
+    }
+
+    var pyramid = CreatePyramid4("pyramid", 10, 20, sceneB);
+
+    var formX = CreatePyramid4("formX", 1, 2, sceneB);
+    var formY = CreatePyramid4("formY", 2, 4, sceneB);
+    var formZ = CreatePyramid4("formZ", 4, 8, sceneB);
+
+    formY.parent = formZ.parent = formX.parent = box;
+
+    // pyramid.position.y = -20;
+    formX.position.x = 20;
+    formY.position.y = 20;
+    formZ.position.z = 20;
+
+    BABYLON.SceneLoader.ImportMesh(null, "assets/", "bent.babylon", sceneB, function (newMeshes, particleSystems) {
+      var newMesh = newMeshes[0];
+      console.log(newMesh);
+      newMesh.isVisible = false;
+    });
+
+
+    var counter = 0;
+    engine.runRenderLoop(function () {
+      // box.rotation.x += 0.005;
+      // box.rotation.y += 0.01;
+      sceneB.render();
+
+      window.midPositions[0] = Math.sin(counter/10) * -1;
+      window.midPositions[1] = Math.sin(counter/10) * -1;
+      window.midPositions[2] = Math.sin(counter/10) * 1;
+
+      pyramid.updateVerticesData(BABYLON.VertexBuffer.PositionKind, window.midPositions);
+
+      // console.log( window.midPositions);
+
+
+      counter++;
+    });
+
+
+
+
+  }
+  </script>
+
+  </body>
+</html>

@@ -1,0 +1,220 @@
+<html>
+<head>
+  <title>FG Experiments</title>
+  <style type="text/css">
+    #container {
+      margin: 0 auto;
+      width:500px;
+    }
+    body {
+      min-height: 2000px;
+    }
+    #precontent {
+      height:500px;
+    }
+
+  </style>
+  <script type="text/javascript" src="http://code.jquery.com/jquery-2.1.0.js"></script>
+</head>
+<body>
+  <div id="precontent">
+
+  </div>
+  <h1>Greenness</h1>
+
+  <div id="container"></div>
+  <script src="js/kinetic-v5.0.1.min.js"></script>
+  <script defer="defer">
+
+    var images = {
+      "smoke": {
+        path: "images/smoke256.png"
+      },
+      "mask": {
+        path: "images/mask.png"
+      }
+    };
+
+    var stage = new Kinetic.Stage({
+      container: 'container',
+      width: 500,
+      height: 500
+    });
+
+    var layer = new Kinetic.Layer();
+    var kuroLayer = new Kinetic.Layer();
+
+    stage.add(layer);
+    stage.add(kuroLayer);
+
+    var initAnimation = function initAnimation(){
+      var rect = new Kinetic.Circle({
+        x: 250,
+        y: 250,
+        radius: 200,
+        fill: '#35aa47'
+      });
+      layer.add(rect);
+
+
+      var gradRect = new Kinetic.Circle({
+        x: 250,
+        y: 250,
+        radius: 200,
+        fillLinearGradientStartPoint: {x:50, y:-200},
+        fillLinearGradientEndPoint: {x:50,y:-200},
+        fillLinearGradientColorStops: [1-.8528, 'black',  1-.6074, '#061f08',  1, '#35aa47'],
+        opacity:0
+      });
+      kuroLayer.add(gradRect);
+
+      var kuroRect = new Kinetic.Circle({
+        x: 250,
+        y: 250,
+        radius: 200,
+        fill: 'black',
+        opacity:0
+      });
+      kuroLayer.add(kuroRect);
+
+      var _smokeParticles = [];
+      var _velocity = 2;
+      var _smokeSize = 128;
+      for (var i = 0; i < 256; i++) {
+        var sprite = new Kinetic.Image({
+          image: images['smoke'].obj,
+          x: Math.random()*stage.getWidth(),
+          y: Math.random()*stage.getHeight()/4,
+          width: _smokeSize,
+          height: _smokeSize*0.6666,
+          offsetX: _smokeSize/2,
+          offsetY: _smokeSize/2,
+          opacity: 0.1
+        });
+        sprite._xVelocity = Math.random()*_velocity*2 - _velocity*1;
+        sprite._yVelocity = Math.random()*_velocity*2 - _velocity*1;
+        _smokeParticles.push(sprite);
+        kuroLayer.add(sprite);
+      };
+
+      layer.draw();
+
+      window.onscroll = function onScrollEvent(){
+        for (var i = _smokeParticles.length - 1; i >= 0; i--) {
+          if(_smokeParticles[i].getOpacity() < 1)
+            _smokeParticles[i].setOpacity( _smokeParticles[i].getOpacity() + 0.01 );
+        }
+      }
+
+      var anim = new Kinetic.Animation(function (frame) {
+
+        //gradient expanding
+        if(gradRect.getFillLinearGradientEndPoint().y< 200)
+          gradRect.setFillLinearGradientEndPoint({x:50,y:gradRect.getFillLinearGradientEndPoint().y + frame.timeDiff*0.2  });
+
+        //gradient becoming visible
+        if(gradRect.getOpacity()< 1)
+          gradRect.setOpacity( gradRect.getOpacity() + 0.0001 * frame.timeDiff );
+
+
+        for (var i = _smokeParticles.length - 1; i >= 0; i-=3) {
+        // console.log( !!_smokeParticles[i], !!_smokeParticles[i-1], !!_smokeParticles[i-2] );
+          var avgX=0,avgY=0,count=0;
+          for (var o = 2; o >= 0 && !!_smokeParticles[i-o]; o--) {
+            avgX+= _smokeParticles[i-o].getX();
+            avgY+= _smokeParticles[i-o].getY();
+            count++;
+          };
+          avgX = avgX/count;
+          avgY = avgY/count;
+
+          //no need to avg
+          if( isNaN(avgX) || count < 2 ) continue;
+
+          for (var o = 2; o >= 0 && !!_smokeParticles[i-o]; o--) {
+            _smokeParticles[i-o].setX(Math.max(0, Math.min(_smokeParticles[i-o].getX()+   ( avgX - _smokeParticles[i-o].getX()  ) / 100, stage.getWidth()) ) );
+            _smokeParticles[i-o].setY(Math.max(0, Math.min(_smokeParticles[i-o].getY()+   ( avgY - _smokeParticles[i-o].getY()  ) / 20, stage.getHeight()) ) );
+          };
+          
+        };
+
+
+     
+        for (var i = _smokeParticles.length - 1; i >= 0; i--) {
+          var centerPoint = { x:250, y:250 };
+          var distance = Math.sqrt(Math.pow(   centerPoint.x -  _smokeParticles[i].getX() , 2) + Math.pow(centerPoint.y -  _smokeParticles[i].getY(), 2));
+          var multi = 1 - distance/(353);
+          multi = Math.pow(multi, 1.5);
+
+          _smokeParticles[i].setX(  _smokeParticles[i].getX()+_smokeParticles[i]._xVelocity*multi );
+          _smokeParticles[i].setY(  _smokeParticles[i].getY()+_smokeParticles[i]._yVelocity*multi );
+
+          if(frame.time < 5000){
+            if(_smokeParticles[i].getOpacity() < 1)
+              _smokeParticles[i].setOpacity( _smokeParticles[i].getOpacity() + 0.0002 * frame.timeDiff );
+          } else {
+            if(_smokeParticles[i].getOpacity() > 0)
+              // _smokeParticles[i].setOpacity( Math.max( _smokeParticles[i].getOpacity() - 0.0002 * frame.timeDiff, 0) );
+              _smokeParticles[i].setOpacity( Math.max( _smokeParticles[i].getOpacity() - 0.00026 * frame.timeDiff, 0) ); //faster fadeout
+          }
+         
+          // Check if has crossed the right edge
+          if (_smokeParticles[i].getX() >= stage.getWidth()) {
+              _smokeParticles[i]._xVelocity = -_smokeParticles[i]._xVelocity;
+          }
+          // Check if has crossed the left edge
+          else if (_smokeParticles[i].getX() <= 0) {
+              _smokeParticles[i]._xVelocity = -_smokeParticles[i]._xVelocity;
+          }
+
+          // Check if has crossed the bottom edge
+          if (_smokeParticles[i].getY() >= stage.getHeight()) {
+              _smokeParticles[i]._yVelocity = -_smokeParticles[i]._yVelocity;
+          }
+          
+          // Check if has crossed the top edge
+          else if (_smokeParticles[i].getY() <= 0) {
+              _smokeParticles[i]._yVelocity = -_smokeParticles[i]._yVelocity;
+          }
+
+        };
+
+        kuroLayer.draw();
+
+        var context = kuroLayer.getContext()._context;
+        context.globalCompositeOperation = 'destination-in';
+        // context.beginPath();
+        // context.arc(250, 250, 200, 0, 2 * Math.PI, true);
+        // context.closePath();
+        // context.fill();
+        context.drawImage(images.mask.obj, 0, 0);
+        context.globalCompositeOperation = "source-over";
+      }, null);
+
+      anim.start();
+
+
+
+    };
+
+
+    //load & init
+    (function loadImages(images, callback) {
+      var loadQueue = 0;
+      for (var image in images) {
+        loadQueue++;
+        images[image].obj = new Image();
+        images[image].obj.onload = function () {
+          if (--loadQueue == 0) callback(images);
+        }
+        images[image].obj.src = images[image].path;
+      }
+    })(images, initAnimation);
+
+
+  </script>
+
+
+
+</body>
+</html>

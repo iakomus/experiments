@@ -1,0 +1,196 @@
+@import "base";
+
+@include keyframe(plane){
+    0%  { background-position: 0 0; }
+    50%  { background-position: 100% 0; }
+};
+
+body{
+    $opacity: .6;
+    $colors: 13;
+    @include background-image(
+        linear-gradient(
+            top, 
+            rgba( 76,122,165,$opacity) ( 0*100%/$colors),
+            rgba(152,193,211,$opacity) ( 1*100%/$colors),
+            rgba(241,218, 49,$opacity) ( 2*100%/$colors),
+            rgba(255,236, 96,$opacity) ( 3*100%/$colors),
+            rgba(226,107, 45,$opacity) ( 4*100%/$colors),
+            rgba( 64, 61, 83,$opacity) ( 5*100%/$colors),
+            rgba( 31, 36, 49,$opacity) ( 6*100%/$colors),
+
+            rgba( 84,114,147,$opacity) ( 7*100%/$colors),
+            rgba(169,190,200,$opacity) ( 8*100%/$colors),
+            rgba(237,218, 74,$opacity) ( 9*100%/$colors),
+            rgba(255,241,119,$opacity) (10*100%/$colors),
+            rgba(206,100, 65,$opacity) (11*100%/$colors),
+            rgba( 58, 57, 64,$opacity) (12*100%/$colors),
+            rgba( 28, 30, 36,$opacity) ($colors*100%/$colors)
+        )
+    );
+    
+    #background{
+        .element{
+            position: fixed;
+            &.large{
+                top: 0;
+                left: 0;
+                bottom: 0;
+                right: 0;
+            }
+            &#moon{
+                $radius: 20px;
+                $bg: #3B4757;
+                $moon: #c7cbd0;
+                $crater: #737277;
+                
+                @mixin shadow($scale){
+                    box-shadow: inset ($scale * $radius / 100 * 3) ($scale * -1 * $radius / 100) 0 0px darken($crater, 20%);
+                }
+                left: -$radius;
+                top: 10%;
+                width: $radius * 2;
+                height: $radius * 2;
+                background: $moon;
+                border-radius: 50%;
+                box-shadow: inset (-1 * $radius / 3) 0px 0 0px darken($moon, 20%);
+                -webkit-backface-visibility: hidden;
+                
+                li {
+                    position: absolute;
+                    list-style: none;
+                    background: $crater;
+                    border-radius: 50%;
+                    
+                    &:nth-child(1) {
+                        left: $radius / 4;
+                        top: $radius / 5 * 3;
+                        width: $radius / 2;
+                        height: $radius / 2;
+                        @include shadow(2);
+                    }
+
+                    &:nth-child(2) {
+                        left: $radius / 2 * 3;
+                        top: $radius / 2;
+                        width: $radius / 4;
+                        height: $radius / 4;
+                        @include shadow(1);
+                    }
+
+                    &:nth-child(3) {
+                        left: $radius;
+                        top: $radius / 2 * 3;
+                        width: $radius / 4;
+                        height: $radius / 4;
+                        @include shadow(1);
+                    }
+
+                    &:nth-child(4) {
+                        left: $radius / 2;
+                        top: $radius / 2 * 3;
+                    }
+
+                    &:nth-child(5) {
+                        left: $radius * 7 / 8;
+                        top: $radius / 6;
+                    }
+
+                    &:nth-child(6) {
+                        left: $radius * 8 / 7;
+                        top: $radius * 4 / 5;
+                    }
+                    &:nth-child(7) {
+                        left: $radius * 20 / 11;
+                        top: $radius;
+                    }
+
+                    &:nth-child(4), &:nth-child(5), &:nth-child(6), &:nth-child(7) {
+                        width: $radius / 8;
+                        height: $radius / 8;
+                        @include shadow(.8);
+                    }
+                }
+            }
+            &#sun{
+                $w: 50px;
+                width: $w;
+                height: $w;
+                left: -$w;
+                top: 50%;
+                
+                @include border-radius(50%);
+                @include box-shadow(0 0 $w*3 rgb(255,255,0));
+                
+                @include background-image(
+                    radial-gradient(
+                        center, 
+                        rgba(255,255,225,1) 10px, 
+                        rgba(255,255,0,.5) 100px
+                    )
+                );
+            }
+            &#clouds{
+                .cloud{
+                    position: absolute;
+                    top: 0;
+                    left: 0;
+                    background-size: contain;
+                    background-repeat: no-repeat;
+                    background-position: 50%;
+                    
+                    &.cloud_0{background-image: url(../images/cloud_w_0.png);&.dark{background-image: url(../images/cloud_b_0.png);}}
+                    &.cloud_1{background-image: url(../images/cloud_w_1.png);&.dark{background-image: url(../images/cloud_b_1.png);}}
+                    &.cloud_2{background-image: url(../images/cloud_w_2.png);&.dark{background-image: url(../images/cloud_b_2.png);}}
+                    &.cloud_3{background-image: url(../images/cloud_w_3.png);&.dark{background-image: url(../images/cloud_b_3.png);}}
+                    &.cloud_4{background-image: url(../images/cloud_w_4.png);&.dark{background-image: url(../images/cloud_b_4.png);}}
+                    &.cloud_5{background-image: url(../images/cloud_w_5.png);&.dark{background-image: url(../images/cloud_b_5.png);}}
+                    &.cloud_6{background-image: url(../images/cloud_w_6.png);&.dark{background-image: url(../images/cloud_b_6.png);}}
+                    &.cloud_7{background-image: url(../images/cloud_w_7.png);&.dark{background-image: url(../images/cloud_b_7.png);}}
+                    &.cloud_8{background-image: url(../images/cloud_w_8.png);&.dark{background-image: url(../images/cloud_b_8.png);}}
+                    &.cloud_9{background-image: url(../images/cloud_w_9.png);&.dark{background-image: url(../images/cloud_b_9.png);}}
+                }
+            }
+            &#mountains{
+                .mountain{
+                    left: 0;
+                    right: 0;
+                    height: 35%;
+                    bottom: -5%;
+                    position: absolute;
+                    background-repeat: repeat-x;
+                    background-position: 0 100%;
+                    background-size: auto 100%;
+                    
+                    &.mountain_0{background-image: url(../images/mountain_0.png);}
+                    &.mountain_1{height:30%; background-image: url(../images/mountain_1.png);}
+                    &.mountain_2{height:25%; background-image: url(../images/mountain_2.png);}
+                }
+            }
+            &#trees{
+                .tree{
+                    position: absolute;
+                    bottom: 0;
+                    background-size: auto 75%;
+                    background-repeat: no-repeat;
+                    background-position: 50% 115%;
+                    @include opacity(.5);
+                    
+                    &.tree_0{background-image: url(../images/tree_b_0.png);}
+                    &.tree_1{background-image: url(../images/tree_b_1.png);}
+                    &.tree_2{background-image: url(../images/tree_b_2.png);}
+                    &.tree_3{background-image: url(../images/tree_b_3.png);}
+                    &.tree_4{background-image: url(../images/tree_b_4.png);}
+                    &.tree_5{background-image: url(../images/tree_b_5.png);}
+                    &.tree_6{background-image: url(../images/tree_b_6.png);}
+                    &.tree_7{background-image: url(../images/tree_b_7.png);}
+                    &.tree_8{background-image: url(../images/tree_b_8.png);}
+                    &.tree_9{background-image: url(../images/tree_b_9.png);}
+                }
+            }
+        }
+    }
+    
+    section{
+    }
+}

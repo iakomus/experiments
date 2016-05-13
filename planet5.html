@@ -1,0 +1,324 @@
+<html>
+<head>
+  <title>FG Experiments</title>
+  <style type="text/css">
+    body,html{
+      margin:0;
+      overflow-x: hidden;
+    }
+
+    .sekai {
+      width: 400px;
+      height: 400px;
+      border-radius: 99999999;
+      background-color: green;
+      margin: 0 auto 300px;
+    }
+    #theland .sekai {
+      margin-top: 50vh;
+      margin-left: 50vw;
+      position: relative;
+      top: -200px;
+      left: -200px;
+    }
+    .section {
+      height:100vh;
+      width:100vw;
+    }
+
+    .section>div {
+      position: fixed;
+      top:0;
+      width: 100%;
+      height: 100%;
+    }
+
+    .scap_mountain {
+      border-radius: 900px 900px 0 0;
+    }
+    .scap_building {
+      
+    }
+    .scap {
+      position: relative;
+      height: 400px;
+      overflow: hidden;
+    }
+    .scap .item {
+      float: left;
+      position: relative;
+    }
+    .scap_lane {
+      position: absolute;
+    }
+    .scap_lane.lane_4 {
+
+    }
+    .scap_lane.lane_3 {
+      margin-top: 50px;
+    }
+    .scap_lane.lane_2 {
+      margin-top: 70px;
+    }
+    .scap_lane.lane_1 {
+      margin-top: 100px;
+    }
+
+
+    .scap_lane.lane_4 .scap_mountain{
+      background-color: #5bdb9d;
+    }
+    .scap_lane.lane_3 .scap_mountain{
+      background-color: #2dcd80;
+    }
+    .scap_lane.lane_2 .scap_mountain{
+      background-color: #24a366;
+    }
+    .scap_lane.lane_1 .scap_mountain{
+      background-color: #186c43;
+    }
+
+
+    .scap_lane.lane_4 .scap_building{
+      background-color: #90a0a8;
+    }
+    .scap_lane.lane_3 .scap_building{
+      background-color: #6e848e;
+    }
+    .scap_lane.lane_2 .scap_building{
+      background-color: #576971;
+    }
+    .scap_lane.lane_1 .scap_building{
+      background-color: #3b474c;
+    }
+
+
+
+
+    #cityscape {
+      top: 100vh;
+      width: 100%;
+      left: 0;
+      position: absolute;
+      margin-top: -400px;
+    }
+   
+
+  </style>
+  <script type="text/javascript" src="http://code.jquery.com/jquery-2.1.0.js"></script>
+  <script type="text/javascript" src="js/skrollr.min.js"></script>
+  <script type="text/javascript" src="js/waypoints.min.js"></script>
+  <script type="text/javascript" src="js/kinetic-v5.0.1.min.js"></script>
+</head>
+<body>
+  <!-- The Land -->
+  <!-- The trees -->
+  <!-- The clouds -->
+  <!-- The planet -->
+  <!-- The end -->
+
+
+  <div class="section" id="theland">
+    <div>
+      <div class="sekai"  data-top="background-color:rgb(53,170,71); width: 3000px; height: 3000px; left: -1500px;  top: -1500px; background-image: !none;"  >
+
+
+      </div>
+      <div id="cityscape"></div>
+    </div>
+  </div>
+  <div class="section" id="thetrees"><div></div></div>
+  <div class="section" id="theclouds"><div></div></div>
+  <div class="section" id="theplanet"><div></div></div>
+  <div class="section" id="theend"><div></div></div>
+
+
+
+  <script type="text/javascript">
+   ( function( $ ) {
+      // Init Skrollr
+      var s = skrollr.init({
+          // forceHeight:false,
+          scale:100,
+          render: function(data) {
+              //Debugging - Log the current scroll position.
+              // console.log(data.curTop);
+          }
+      });
+  } )( jQuery );
+  </script>
+
+
+  <script type="text/javascript">
+
+    var baseItem = function(){};
+    baseItem.prototype.setWidth=function(width){ this._width = width; };
+    baseItem.prototype.getWidth=function(){ return this._width; };
+    baseItem.prototype.setHeight=function(height){ this._height = height; };
+    baseItem.prototype.getHeight=function(){ return this._height; };
+    baseItem.prototype.setDom=function(){ this._domElement = document.createElement('div'); };
+    baseItem.prototype.getDom=function(){ return this._domElement; };
+    baseItem.prototype.init=function(){  this.setDom(); };
+    baseItem.prototype.render = function(){
+      this.getDom().style.width = this.getWidth();
+      this.getDom().style.height = this.getHeight();
+      this.getDom().style.marginTop = this._maxHeight - this.getHeight();
+      this.getDom().style.webkitFilter = 'brightness('+ (0.9 + Math.random() * 0.1) +')';
+
+
+    };
+    baseItem.prototype._maxHeight = 400;
+    baseItem.prototype._offsetScalling = 0.2;
+
+
+
+    //buildings
+    var building = function(zOffset){
+      this.init();
+      this.setWidth(  200 +  Math.random() * 200 );
+      this.setHeight(  200 +  Math.random() * 200 );
+      this.setWidth(  this.getWidth() * (1-zOffset*this._offsetScalling)  );
+      this.setHeight(  this.getHeight() * (0.4+zOffset*this._offsetScalling)  );
+      this._zOffset = zOffset;
+
+      this._domElement.className = 'scap_building item';
+      this._type = 'Building';
+      this.render();
+    };
+    for(i in baseItem.prototype)  building.prototype[i] = baseItem.prototype[i]; //extending
+
+
+    //mountains
+    var mountain = function(zOffset){
+      this.init();
+      this.setWidth(  400 +  Math.random() * 200 );
+      this.setHeight(  100 +  Math.random() * 100 );
+      this.setWidth( this.getWidth() * (0.4+zOffset*this._offsetScalling) );
+      this.setHeight( this.getHeight() * (0.4+zOffset*this._offsetScalling) );
+      this._zOffset = zOffset;
+
+      this._domElement.className = 'scap_mountain item';
+      this._type = 'Mountain';
+      this.render();
+    };
+    for(i in baseItem.prototype)  mountain.prototype[i] = baseItem.prototype[i]; //extending
+
+
+    //thingscape
+    var laneScape = function(num, totalLanes){
+      this._strip = [];
+      this._domElement = document.createElement('div');
+      this._domElement.className = 'scap_lane';
+      this._width = 0;
+      this._num = num;
+      this._totalLanes = totalLanes;
+
+      var baseWidth = 6000;
+      var increment = 10000;
+
+      this._targetWidth = baseWidth + increment*num;
+
+      // for (var i = 0; i < (30 + 20*num); i++) {
+      //   if(Math.random() > 0.5){
+      //     this.addBuilding();
+      //   } else {
+      //     this.addMountain();
+      //   }
+      // };
+
+      while(  this._width < this._targetWidth ){
+
+        var place = this._width / this._targetWidth;
+
+        var valculation = Math.random()*0.5 + place;
+
+        if(valculation < 0.7){
+          this.addBuilding();
+        } else {
+          this.addMountain();
+        }
+      };
+
+
+      // console.log(num, this._targetWidth, this._width)
+    };
+    laneScape.prototype.addBuilding = function(){
+      var newItem = new building( this._totalLanes - 1 - this._num );
+      this._strip.push( newItem );
+      this._width+= newItem.getWidth();
+    };
+    laneScape.prototype.addMountain = function(){
+      var newItem = new mountain( this._totalLanes - 1 - this._num );
+      this._strip.push( newItem );
+      this._width+= newItem.getWidth();
+    };
+    laneScape.prototype.getDom=function(){
+      return this._domElement;
+    };
+    laneScape.prototype.addAnimation = function(){
+      this.getDom().setAttribute('data-top', ' left: ' + this._startOffset + 'px; ');
+      this.getDom().setAttribute('data--20p-top-bottom', ' left:-' + this._endOffset + 'px; ');
+
+      this.getDom().setAttribute('data-anchor-target', '#theland');
+
+    };
+    laneScape.prototype.render = function(){
+
+      for (var i = this._strip.length - 1; i >= 0; i--) {
+          this.getDom().appendChild( this._strip[i].getDom() );
+          // this._width+= this._strip[i].getWidth();
+      };
+      this.getDom().style.width = this._width;
+    };
+
+
+    var thingScape = function(container){
+      this._lanes = [];
+      this._domElement = document.createElement('div');
+      this._domElement.className = 'scap';
+      this._container = container;
+
+      var laneNum = 4;
+
+      for (var i = 0; i < laneNum; i++) {
+        this.addLane( laneNum-1 -i, laneNum); //the num defines the number of buildings
+      };
+
+      this.render();
+    };
+
+    thingScape.prototype.addLane = function(i, total){
+      var newLane = new laneScape(i, total);
+      this._lanes.push( newLane );
+      newLane.getDom().className += (' lane_'+this._lanes.length);
+      newLane.render();
+
+      newLane._startOffset = 2000;
+      newLane._endOffset = newLane._width + 2000  ;
+
+      newLane.addAnimation();
+
+    };
+
+    thingScape.prototype.getDom=function(){
+      return this._domElement;
+    };
+
+    thingScape.prototype.render = function(){
+      for (var i = this._lanes.length - 1; i >= 0; i--) {
+        this.getDom().appendChild( this._lanes[i].getDom() );
+      };
+      document.getElementById(this._container).appendChild( this.getDom() );
+
+      var scrollrInstance = skrollr.init();
+      scrollrInstance.refresh();
+    };
+
+    var domScape = new thingScape('cityscape');
+
+  </script>
+
+
+
+</body>
+</html>

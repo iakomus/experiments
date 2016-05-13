@@ -1,0 +1,611 @@
+<html>
+<head>
+  <title>FG Experiments</title>
+  <style type="text/css">
+    body,html{
+      margin:0;
+      overflow-x: hidden;
+    }
+
+    .sekai {
+      width: 400px;
+      height: 400px;
+      border-radius: 99999999;
+      background-color: green;
+      margin: 0 auto 300px;
+    }
+
+    .section {
+      height:100vh;
+      width:100vw;
+    }
+
+    .section>div {
+      position: fixed;
+      top:0;
+      width: 100%;
+      height: 100%;
+    }
+
+    #theland>div{
+      background-color: rgba(0,100,0, 0.4);
+      position: fixed;
+      top:0;
+    }
+
+    #theland .sekai {
+      margin-top: 50vh;
+      margin-left: 50vw;
+      position: relative;
+      top: -200px;
+      left: -200px;
+    }
+
+    #canvasPlanet {
+      position: relative;
+      top: -50px;
+      left: -50px;
+    }
+
+    #theland .sekai.skrollable-after2 {
+      background: #000000; /* Old browsers */
+      background: -moz-linear-gradient(top,  #000000 14%, #061f08 39%, #35aa47 100%); /* FF3.6+ */
+      background: -webkit-gradient(linear, left top, left bottom, color-stop(14%,#000000), color-stop(39%,#061f08), color-stop(100%,#35aa47)); /* Chrome,Safari4+ */
+      background: -webkit-linear-gradient(top,  #000000 14%,#061f08 39%,#35aa47 100%); /* Chrome10+,Safari5.1+ */
+      background: -o-linear-gradient(top,  #000000 14%,#061f08 39%,#35aa47 100%); /* Opera 11.10+ */
+      background: -ms-linear-gradient(top,  #000000 14%,#061f08 39%,#35aa47 100%); /* IE10+ */
+      background: linear-gradient(to bottom,  #000000 14%,#061f08 39%,#35aa47 100%); /* W3C */
+      filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#000000', endColorstr='#35aa47',GradientType=0 ); /* IE6-9 */
+    }
+
+    #viewport {
+      bottom: 0;
+      left: 0;
+      -webkit-perspective: 300;
+      position: absolute;
+      right: 0;
+      top: 50vh;
+      height: 700px;
+      
+      margin-top: -364px;
+      left: 20px;
+    }
+    #world {
+      height: 512px;
+      margin-left: auto;
+      margin-right: auto;
+      position: relative;
+      top: 50vh;
+      margin-top: -256px;
+      -webkit-transform-style: preserve-3d;
+      width: 512px;
+      opacity: 0;
+    }
+    #world div {
+      -webkit-transform-style: preserve-3d;
+      -moz-transform-style: preserve-3d;
+      -o-transform-style: preserve-3d;
+    }
+    .cloudBase {
+      height: 20px;
+      left: 256px;
+      margin-left: -10px;
+      margin-top: -10px;
+      position: absolute;
+      top: 256px;
+      width: 20px;
+/*      background-color:red;
+*/    }
+
+    .cloudLayer {
+      height: 256px;
+      left: 50%;
+      margin-left: -128px;
+      margin-top: -128px;
+      position: absolute;
+      top: 50%;
+      width: 256px;
+/*    background-color:red;
+      opacity: 0.2;
+*/
+      background-image: url(images/cloud.png);
+    }
+
+
+  </style>
+  <script type="text/javascript" src="http://code.jquery.com/jquery-2.1.0.js"></script>
+  <script type="text/javascript" src="js/skrollr.min.js"></script>
+  <script type="text/javascript" src="js/waypoints.min.js"></script>
+  <script type="text/javascript" src="js/kinetic-v5.0.1.min.js"></script>
+</head>
+<body>
+  <!-- The Land -->
+  <!-- The trees -->
+  <!-- The clouds -->
+  <!-- The planet -->
+  <!-- The end -->
+
+
+  <div class="section" id="theland">
+    <div>
+      <div class="sekai"
+        data-top="background-color:rgb(53,170,71); width: 3000px; height: 3000px; left: -1500px;  top: -1500px; background-image: !none;" 
+        data--20p-top-bottom="background-color:rgb(80,255,107);" 
+        data--40p-top-bottom="background-color:rgb(53,170,71);  width:400px; height:400px; left: -200px;  top: -200px; "
+        data--45p-top-bottom="background-image: !linear-gradient(to bottom,  #000000 14%,#061f08 39%,#35aa47 100%);"
+
+
+        data-anchor-target="#theland"      >
+        <div id="canvasPlanet"
+        data--40p-top-bottom="opacity:0 "
+        data--45p-top-bottom="opacity:1 "
+        data--55p-top-bottom="opacity:1 "
+        data--70p-top-bottom="opacity:0 "
+        data-anchor-target="#theland" 
+
+        ></div>
+
+      </div>
+    </div>
+  </div>
+  <div class="section" id="thetrees"><div>
+
+    <div id="viewport"
+        data--15p-top-bottom="-webkit-filter: brightness(1);"
+        
+        data--25p-top-bottom="-webkit-filter: brightness(-1);"
+        data-anchor-target="#thetrees" 
+
+    >
+      <div id="world"
+
+        data-top="transform: translateZ(0px); opacity:0 "
+        data--1p-top-bottom="transform: translateZ(-60px); opacity:1"
+        data--20p-top-bottom="transform: translateZ(-1564px); opacity:0.2"
+        data--30p-top-bottom="transform: translateZ(-1564px); opacity:0"
+        data-anchor-target="#thetrees" 
+      >
+      </div>
+    </div>
+
+  </div></div>
+  <div class="section" id="theclouds"><div></div></div>
+  <div class="section" id="theplanet"><div></div></div>
+  <div class="section" id="theend"><div></div></div>
+
+
+
+  <script type="text/javascript">
+   ( function( $ ) {
+      // Init Skrollr
+      var s = skrollr.init({
+          // forceHeight:false,
+          scale:100,
+          render: function(data) {
+              //Debugging - Log the current scroll position.
+              // console.log(data.curTop);
+          }
+      });
+  } )( jQuery );
+  </script>
+
+
+  <script type="text/javascript">
+    //waypoints setup
+    var listenToElementVisibility = function listenToElementVisibility(elemSelector, onCallBack, offCallBack){
+      $(elemSelector).waypoint(function() {
+        if(arguments[0] == 'down'){
+          onCallBack();
+        } else if (arguments[0] == 'up'){
+          offCallBack();
+        }
+      },{
+        offset: function() {
+          return $(this).height();
+        }
+      });
+      $(elemSelector).waypoint(function() {
+        if(arguments[0] == 'down'){
+          offCallBack();
+        } else if (arguments[0] == 'up'){
+          onCallBack();
+        }
+      },{
+        offset: function() {
+          return -$(this).height()*2;
+        }
+      });
+    };
+  </script>
+
+
+  <script type="text/javascript">
+  //waypoints usage
+  var canvasElements = {
+    'planet': { enabled:false }
+  };
+
+
+  var thePlanet = '#theplanet';
+  var planetCameIn = function(){
+    canvasElements.planet.enabled = true;
+  } 
+  var planetIsOut = function(){
+    canvasElements.planet.enabled = false;
+  }
+
+  listenToElementVisibility(thePlanet, planetCameIn, planetIsOut);
+
+
+  </script>
+
+  <script type="text/javascript">
+    //kinetic js canvas
+    var images = {
+      "smoke": {
+        path: "images/smoke256.png"
+      },
+      "mask": {
+        path: "images/mask.png"
+      }
+    };
+
+    var stage = new Kinetic.Stage({
+      container: 'canvasPlanet',
+      width: 500,
+      height: 500
+    });
+
+    var layer = new Kinetic.Layer();
+    var kuroLayer = new Kinetic.Layer();
+
+    stage.add(layer);
+    stage.add(kuroLayer);
+
+    var initAnimation = function initAnimation(){
+      var rect = new Kinetic.Circle({
+        x: 250,
+        y: 250,
+        radius: 200,
+        fill: '#35aa47'
+      });
+      layer.add(rect);
+
+
+      var gradRect = new Kinetic.Circle({
+        x: 250,
+        y: 250,
+        radius: 200,
+        fillLinearGradientStartPoint: {x:50, y:-200},
+        fillLinearGradientEndPoint: {x:50,y:-200},
+        fillLinearGradientColorStops: [1-.8528, 'black',  1-.6074, '#061f08',  1, '#35aa47'],
+        opacity:0
+      });
+      kuroLayer.add(gradRect);
+
+      var kuroRect = new Kinetic.Circle({
+        x: 250,
+        y: 250,
+        radius: 200,
+        fill: 'black',
+        opacity:0
+      });
+      kuroLayer.add(kuroRect);
+
+      var _smokeParticles = [];
+      var _velocity = 2;
+      var _smokeSize = 128;
+      for (var i = 0; i < 128; i++) {
+        var sprite = new Kinetic.Image({
+          image: images['smoke'].obj,
+          x: Math.random()*stage.getWidth(),
+          y: Math.random()*stage.getHeight()/1.2,
+          width: _smokeSize,
+          height: _smokeSize*0.6666,
+          offsetX: _smokeSize/2,
+          offsetY: _smokeSize/2,
+          opacity: 0.1
+        });
+        sprite._xVelocity = Math.random()*_velocity*2 - _velocity*1;
+        sprite._yVelocity = Math.random()*_velocity*2 - _velocity*1;
+        _smokeParticles.push(sprite);
+        kuroLayer.add(sprite);
+      };
+
+      layer.draw();
+
+      window.onscroll = function onScrollEvent(){
+        for (var i = _smokeParticles.length - 1; i >= 0; i--) {
+          if(_smokeParticles[i].getOpacity() < 1)
+            _smokeParticles[i].setOpacity( _smokeParticles[i].getOpacity() + 0.01 );
+        }
+      }
+
+      var anim = new Kinetic.Animation(function (frame) {
+
+        if(!canvasElements.planet.enabled) return false;
+
+        //gradient expanding
+        if(gradRect.getFillLinearGradientEndPoint().y< 200)
+          gradRect.setFillLinearGradientEndPoint({x:50,y:gradRect.getFillLinearGradientEndPoint().y + frame.timeDiff*0.2  });
+
+        //gradient becoming visible
+        if(gradRect.getOpacity()< 1)
+          gradRect.setOpacity( gradRect.getOpacity() + 0.0001 * frame.timeDiff );
+
+
+        for (var i = _smokeParticles.length - 1; i >= 0; i-=3) {
+        // console.log( !!_smokeParticles[i], !!_smokeParticles[i-1], !!_smokeParticles[i-2] );
+          var avgX=0,avgY=0,count=0;
+          for (var o = 2; o >= 0 && !!_smokeParticles[i-o]; o--) {
+            avgX+= _smokeParticles[i-o].getX();
+            avgY+= _smokeParticles[i-o].getY();
+            count++;
+          };
+          avgX = avgX/count;
+          avgY = avgY/count;
+
+          //no need to avg
+          if( isNaN(avgX) || count < 2 ) continue;
+
+          for (var o = 2; o >= 0 && !!_smokeParticles[i-o]; o--) {
+            _smokeParticles[i-o].setX(Math.max(0, Math.min(_smokeParticles[i-o].getX()+   ( avgX - _smokeParticles[i-o].getX()  ) / 100, stage.getWidth()) ) );
+            _smokeParticles[i-o].setY(Math.max(0, Math.min(_smokeParticles[i-o].getY()+   ( avgY - _smokeParticles[i-o].getY()  ) / 20, stage.getHeight()) ) );
+          };
+          
+        };
+
+
+     
+        for (var i = _smokeParticles.length - 1; i >= 0; i--) {
+          var centerPoint = { x:250, y:250 };
+          var distance = Math.sqrt(Math.pow(   centerPoint.x -  _smokeParticles[i].getX() , 2) + Math.pow(centerPoint.y -  _smokeParticles[i].getY(), 2));
+          var multi = 1 - distance/(353);
+          multi = Math.pow(multi, 1.5);
+
+          _smokeParticles[i].setX(  _smokeParticles[i].getX()+_smokeParticles[i]._xVelocity*multi );
+          _smokeParticles[i].setY(  _smokeParticles[i].getY()+_smokeParticles[i]._yVelocity*multi );
+
+          if(frame.time < 5000){
+            if(_smokeParticles[i].getOpacity() < 1)
+              _smokeParticles[i].setOpacity( _smokeParticles[i].getOpacity() + 0.0002 * frame.timeDiff );
+          } else {
+            if(_smokeParticles[i].getOpacity() > 0.5)
+              // _smokeParticles[i].setOpacity( Math.max( _smokeParticles[i].getOpacity() - 0.0002 * frame.timeDiff, 0) );
+              _smokeParticles[i].setOpacity( Math.max( _smokeParticles[i].getOpacity() - 0.00026 * frame.timeDiff, 0) ); //faster fadeout
+          }
+         
+          // Check if has crossed the right edge
+          if (_smokeParticles[i].getX() >= stage.getWidth()) {
+              _smokeParticles[i]._xVelocity = -_smokeParticles[i]._xVelocity;
+          }
+          // Check if has crossed the left edge
+          else if (_smokeParticles[i].getX() <= 0) {
+              _smokeParticles[i]._xVelocity = -_smokeParticles[i]._xVelocity;
+          }
+
+          // Check if has crossed the bottom edge
+          if (_smokeParticles[i].getY() >= stage.getHeight()) {
+              _smokeParticles[i]._yVelocity = -_smokeParticles[i]._yVelocity;
+          }
+          
+          // Check if has crossed the top edge
+          else if (_smokeParticles[i].getY() <= 0) {
+              _smokeParticles[i]._yVelocity = -_smokeParticles[i]._yVelocity;
+          }
+
+        };
+
+        kuroLayer.draw();
+
+        var context = kuroLayer.getContext()._context;
+        context.globalCompositeOperation = 'destination-in';
+        context.drawImage(images.mask.obj, 0, 0);
+        context.globalCompositeOperation = "source-over";
+      }, null);
+
+      anim.start();
+
+
+
+    };
+
+
+    //load & init
+    (function loadImages(images, callback) {
+      var loadQueue = 0;
+      for (var image in images) {
+        loadQueue++;
+        images[image].obj = new Image();
+        images[image].obj.onload = function () {
+          if (--loadQueue == 0) callback(images);
+        }
+        images[image].obj.src = images[image].path;
+      }
+    })(images, initAnimation);
+
+  </script>
+
+<!-- CSS Clouds -->
+
+
+<script type="text/javascript">
+    window.realYOffset = 0;
+
+    //DOM/Page Scripts
+    $(window).load(function(){
+    // $(function(){
+      var finalY = $("#thetrees").offset().top;
+      var thresholdY = 600;
+      $(window).scrollTop(finalY);
+      $(window).scroll(function onScrollEvent(){ 
+
+        window.realYOffset = ( $(window).scrollTop() - finalY ) / thresholdY;
+
+        window.worldXAngle = realYOffset*5;
+
+        //parallaxing clouds
+        updateView();
+      });
+    });
+  </script>
+
+
+
+  <script type="text/javascript">
+
+    /*
+      Defining our variables
+      world and viewport are DOM elements,
+      worldXAngle and worldYAngle are floats that hold the world rotations,
+      d is an int that defines the distance of the world from the camera 
+    */
+    var world = document.getElementById( 'world' ),
+      viewport = document.getElementById( 'viewport' ),
+      worldXAngle = 0,
+      worldYAngle = 0,
+      d = -100;
+     
+    /*
+      Event listener to transform mouse position into angles 
+      from -180 to 180 degress, both vertically and horizontally
+    */
+    window.addEventListener( 'mousemove', function( e ) {
+      worldYAngle = -( .5 - ( e.clientX / window.innerWidth ) ) * 0.25;
+      // worldXAngle = ( .5 - ( e.clientY / window.innerHeight ) ) * 0.2;
+      updateView();
+    } );
+     
+    /*
+      Changes the transform property of world to be
+      translated in the Z axis by d pixels,
+      rotated in the X axis by worldXAngle degrees and
+      rotated in the Y axis by worldYAngle degrees.
+    */
+    function updateView() {
+      // world.style.webkitTransform = 'translateZ( ' + (-realYOffset*150) + 'px ) ';
+      // \
+      // translateY( ' + (realYOffset*100) + 'px)';
+      // \
+      // rotateX( ' + worldXAngle + 'deg) \
+      // rotateY( ' + worldYAngle + 'deg)';
+    }
+
+
+
+  /*
+      objects is an array of cloud bases
+      layers is an array of cloud layers
+  */
+  var objects = [],
+    layers = [];
+   
+   generate();
+  /*
+      Clears the DOM of previous clouds bases 
+      and generates a new set of cloud bases
+  */
+  function generate() {
+    objects = [];
+    layers = [];
+    if ( world.hasChildNodes() ) {
+      while ( world.childNodes.length >= 1 ) {
+        world.removeChild( world.firstChild );       
+      } 
+    }
+    for( var j = 0; j < 50; j++ ) {
+      objects.push( createCloud() );
+    }
+  }
+   
+
+  function createCloud() {
+
+    var availWidth = document.getElementsByTagName('body')[0].offsetWidth;
+    // var availHeight = document.getElementsByTagName('body')[0].offsetHeight;
+  
+    var div = document.createElement( 'div'  );
+    div.className = 'cloudBase';
+    var x = availWidth/2 - ( Math.random() * availWidth );
+    var y = availWidth/2 - ( Math.random() * availWidth );
+    var z = availWidth*1.2 - ( Math.random() * availWidth );
+    var t = 'translateX( ' + x + 'px ) translateY( ' + y + 'px ) translateZ( ' + z + 'px )';
+    div.style.webkitTransform = t;
+    div.style.MozTransform = t;
+    div.style.oTransform = t;
+    world.appendChild( div );
+    
+    for( var j = 0; j < 3 + Math.round( Math.random() * 3 ); j++ ) {
+      var cloud = document.createElement( 'div' );
+      cloud.className = 'cloudLayer';
+      
+      // var x = availWidth/2 - ( Math.random() * availWidth );
+      // var y = availHeight/2 - ( Math.random() * availHeight );
+      // var z = 0 - ( Math.random() * availWidth*0.1 );
+
+      var x = 256 - ( Math.random() * 512 );
+      var y = 256 - ( Math.random() * 512 );
+      var z = 100 - ( Math.random() * 200 );
+
+
+      var a = Math.random() * 360;
+      var s = .25 + Math.random();
+      x *= .2; y *= .2;
+      cloud.data = { 
+        x: x,
+        y: y,
+        z: z,
+        a: a,
+        s: s,
+        speed: .1 * Math.random()
+      };
+      var t = 'translateX( ' + x + 'px ) translateY( ' + y + 'px ) translateZ( ' + z + 'px ) rotateZ( ' + a + 'deg ) scale( ' + s + ' )';
+      cloud.style.webkitTransform = t;
+      cloud.style.MozTransform = t;
+      cloud.style.oTransform = t;
+    
+      div.appendChild( cloud );
+      layers.push( cloud );
+    }
+    
+    return div;
+  }
+
+
+
+  //updating clouds orientation
+  function update (){
+
+    if(document.getElementById('world').style.opacity == 0){
+      requestAnimationFrame( update );
+      return;
+    }
+    
+    console.log('update clouds');
+    for( var j = 0; j < layers.length; j++ ) {
+      var layer = layers[ j ];
+      layer.data.a += layer.data.speed;
+      var t = 'translateX( ' + layer.data.x + 'px ) translateY( ' + layer.data.y + 'px ) translateZ( ' + layer.data.z + 'px ) rotateZ( ' + (layer.data.a*3) + 'deg ) scale( ' + layer.data.s + ')';
+
+      layer.style.webkitTransform = t;
+      layer.style.MozTransform = t;
+      layer.style.oTransform = t;
+    }
+    
+    requestAnimationFrame( update );
+    
+  }
+  
+  update();
+
+
+
+  </script>
+
+
+
+
+
+
+</body>
+</html>

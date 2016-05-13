@@ -1,0 +1,275 @@
+<html>
+<head>
+  <title>FG Experiments</title>
+  <style type="text/css">
+    #container {
+      margin: 0 auto;
+      width:500px;
+    }
+    body {
+      min-height: 2000px;
+    }
+    #precontent {
+      height:500px;
+    }
+
+
+
+    #viewport {
+        bottom: 0;
+        left: 0;
+        overflow: hidden;
+        -webkit-perspective: 300; 
+        position: absolute;
+        right: 0;
+        top: 0;
+        background-image: -webkit-gradient( linear, left bottom, left top, color-stop(0.28, rgba(121,164,111, 0.8)), color-stop(0.64, rgba(80,114,72,0.8)) );
+
+        height:3000px;
+
+    }
+     
+    #world {
+        height: 512px;
+        left: 50%;
+        margin-left: -256px;
+        margin-top: -256px;
+        position: absolute;
+        top: 50%;
+        -webkit-transform-style: preserve-3d;
+        width: 512px;
+/*        background-color: rgba(5,60,10, 0.2);
+*/    }
+    #world div {
+      -webkit-transform-style: preserve-3d;
+      -moz-transform-style: preserve-3d;
+      -o-transform-style: preserve-3d;
+    }
+    .cloudBase {
+      height: 20px;
+      left: 256px;
+      margin-left: -10px;
+      margin-top: -10px;
+      position: absolute;
+      top: 256px;
+      width: 20px;
+/*      background-color:red;
+*/    }
+
+    .cloudLayer {
+      height: 256px;
+      left: 50%;
+      margin-left: -128px;
+      margin-top: -128px;
+      position: absolute;
+      top: 50%;
+      width: 256px;
+/*    background-color:red;
+      opacity: 0.2;
+*/
+      background-image: url(images/cloud.png);
+    }
+
+  </style>
+  <script type="text/javascript" src="http://code.jquery.com/jquery-2.1.0.js"></script>
+</head>
+<body>
+
+  <div id="viewport">
+      <div id="world"></div>
+  </div>
+
+  <div id="precontent">
+
+  </div>
+
+  <div id="container">
+
+  </div>
+  <h1>Greenness</h1>
+
+  <script type="text/javascript">
+    window.realYOffset = 0;
+
+    //DOM/Page Scripts
+    $(window).load(function(){
+    // $(function(){
+      var finalY = $("#container").offset().top;
+      var thresholdY = 600;
+      $(window).scrollTop(finalY);
+      $(window).scroll(function onScrollEvent(){ 
+
+        window.realYOffset = ( $(window).scrollTop() - finalY ) / thresholdY;
+
+        window.worldXAngle = realYOffset*5;
+
+        //parallaxing clouds
+        updateView();
+      });
+    });
+  </script>
+
+
+
+  <script type="text/javascript">
+
+    /*
+      Defining our variables
+      world and viewport are DOM elements,
+      worldXAngle and worldYAngle are floats that hold the world rotations,
+      d is an int that defines the distance of the world from the camera 
+    */
+    var world = document.getElementById( 'world' ),
+      viewport = document.getElementById( 'viewport' ),
+      worldXAngle = 0,
+      worldYAngle = 0,
+      d = -100;
+     
+    /*
+      Event listener to transform mouse position into angles 
+      from -180 to 180 degress, both vertically and horizontally
+    */
+    window.addEventListener( 'mousemove', function( e ) {
+      worldYAngle = -( .5 - ( e.clientX / window.innerWidth ) ) * 0.25;
+      // worldXAngle = ( .5 - ( e.clientY / window.innerHeight ) ) * 0.2;
+      updateView();
+    } );
+     
+    /*
+      Changes the transform property of world to be
+      translated in the Z axis by d pixels,
+      rotated in the X axis by worldXAngle degrees and
+      rotated in the Y axis by worldYAngle degrees.
+    */
+    function updateView() {
+      world.style.webkitTransform = 'translateZ( ' + d + 'px ) \
+        translateY( ' + (realYOffset*100) + 'px) \
+        rotateX( ' + worldXAngle + 'deg) \
+        rotateY( ' + worldYAngle + 'deg)';
+    }
+
+
+
+/*
+    objects is an array of cloud bases
+    layers is an array of cloud layers
+*/
+var objects = [],
+  layers = [];
+ 
+ generate();
+/*
+    Clears the DOM of previous clouds bases 
+    and generates a new set of cloud bases
+*/
+function generate() {
+  objects = [];
+  layers = [];
+  if ( world.hasChildNodes() ) {
+    while ( world.childNodes.length >= 1 ) {
+      world.removeChild( world.firstChild );       
+    } 
+  }
+  for( var j = 0; j < 40; j++ ) {
+    objects.push( createCloud() );
+  }
+}
+ 
+/*
+    Creates a single cloud base: a div in world
+    that is translated randomly into world space.
+    Each axis goes from -256 to 256 pixels.
+*/
+// function createCloud() {
+ 
+//     var div = document.createElement( 'div'  );
+//     div.className = 'cloudBase';
+//     var t = 'translateX( ' + (256 - ( Math.random() * 512 )) + 'px ) \
+//         translateY( ' + (256 - ( Math.random() * 512 )) + 'px ) \
+//         translateZ( ' + (256 - ( Math.random() * 512 )) + 'px )';
+//     div.style.webkitTransform = t;
+//     world.appendChild( div );
+     
+//     return div;
+// }
+
+
+  function createCloud() {
+
+    var availWidth = document.getElementsByTagName('body')[0].offsetWidth;
+    var availHeight = document.getElementsByTagName('body')[0].offsetHeight;
+  
+    var div = document.createElement( 'div'  );
+    div.className = 'cloudBase';
+    var x = availWidth/2 - ( Math.random() * availWidth );
+    var y = availHeight/2 - ( Math.random() * availHeight );
+    var z = availWidth/4 - ( Math.random() * availWidth/2 );
+    var t = 'translateX( ' + x + 'px ) translateY( ' + y + 'px ) translateZ( ' + z + 'px )';
+    div.style.webkitTransform = t;
+    div.style.MozTransform = t;
+    div.style.oTransform = t;
+    world.appendChild( div );
+    
+    for( var j = 0; j < 5 + Math.round( Math.random() * 10 ); j++ ) {
+      var cloud = document.createElement( 'div' );
+      cloud.className = 'cloudLayer';
+      
+      // var x = availWidth/2 - ( Math.random() * availWidth );
+      // var y = availHeight/2 - ( Math.random() * availHeight );
+      // var z = 0 - ( Math.random() * availWidth*0.1 );
+
+      var x = 256 - ( Math.random() * 512 );
+      var y = 256 - ( Math.random() * 512 );
+      var z = 100 - ( Math.random() * 200 );
+
+
+      var a = Math.random() * 360;
+      var s = .25 + Math.random();
+      x *= .2; y *= .2;
+      cloud.data = { 
+        x: x,
+        y: y,
+        z: z,
+        a: a,
+        s: s,
+        speed: .1 * Math.random()
+      };
+      var t = 'translateX( ' + x + 'px ) translateY( ' + y + 'px ) translateZ( ' + z + 'px ) rotateZ( ' + a + 'deg ) scale( ' + s + ' )';
+      cloud.style.webkitTransform = t;
+      cloud.style.MozTransform = t;
+      cloud.style.oTransform = t;
+    
+      div.appendChild( cloud );
+      layers.push( cloud );
+    }
+    
+    return div;
+  }
+
+
+
+  //updating clouds orientation
+  function update (){
+    
+    for( var j = 0; j < layers.length; j++ ) {
+      var layer = layers[ j ];
+      layer.data.a += layer.data.speed;
+      var t = 'translateX( ' + layer.data.x + 'px ) translateY( ' + layer.data.y + 'px ) translateZ( ' + layer.data.z + 'px ) rotateY( ' + ( - worldYAngle ) + 'deg ) rotateX( ' + ( - worldXAngle ) + 'deg ) rotateZ( ' + (layer.data.a*3) + 'deg ) scale( ' + layer.data.s + ')';
+
+      layer.style.webkitTransform = t;
+      layer.style.MozTransform = t;
+      layer.style.oTransform = t;
+    }
+    
+    requestAnimationFrame( update );
+    
+  }
+  
+  update();
+
+
+
+  </script>
+
+</body>
+</html>
